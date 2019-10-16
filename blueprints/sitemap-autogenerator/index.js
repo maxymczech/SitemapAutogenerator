@@ -29,7 +29,7 @@ if (ENV()["sitemap-autogenerator"] !== undefined && ENV()["sitemap-autogenerator
 
 module.exports = {
   description: '',
-  triggerSitemapBuilder: function (theURL) {
+  triggerSitemapBuilder: function (theURL, outputPath = "dist/sitemap.xml") {
     baseURL = theURL;
     fs.readFile(pathForRouterJS, 'utf8', function (err, data) {
       if (err) return console.log('Encountered the following error:', err);
@@ -61,7 +61,7 @@ module.exports = {
       if (routerFound === false) console.log('!!! sitemap-autogenerator could not find a Router object in your ember router.js file, process aborted!');
       else {
         // console.log(routeArray);
-        writeToFile();
+        writeToFile(outputPath);
       }
     });
   },
@@ -131,7 +131,7 @@ function combineAllPaths(pathArray) {
   return path;
 }
 
-function writeToFile() {
+function writeToFile(outputPath) {
   let changeFrequency, priority, showLog; // Look for custom values for 'changeFrequency' and 'defaultPriorityValue' in environment.js
   if (ENV()["sitemap-autogenerator"] !== undefined) { // Check to see if user has created ENV "sitemap-autogenerator" in environment.js
     if (ENV()["sitemap-autogenerator"].changeFrequency !== undefined) changeFrequency = ENV()["sitemap-autogenerator"].changeFrequency;
@@ -171,7 +171,7 @@ function writeToFile() {
   });
   fileData += ('\n</urlset>');
 
-  fs.writeFile("dist/sitemap.xml", fileData, function (err) {
+  fs.writeFile(outputPath, fileData, function (err) {
     if (err) {
       return console.log(err);
     }
